@@ -1,0 +1,2967 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>מעבדת מולטימדיה</title>
+
+    <style>
+        *
+        {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html,
+        body
+        {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #020617;
+            color: #e5e7eb;
+        }
+
+        body
+        {
+            position: fixed;
+            inset: 0;
+        }
+
+        button
+        {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .app
+        {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        /* ===================== עמוד פתיחה ===================== */
+
+        .intro-overlay
+        {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: #020617;
+            overflow: hidden;
+        }
+
+        .landing-screen
+        {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            padding: 18px;
+            background:
+                radial-gradient(circle at 50% 12%, rgba(56, 189, 248, 0.25), transparent 34%),
+                radial-gradient(circle at 18% 82%, rgba(45, 212, 191, 0.16), transparent 36%),
+                radial-gradient(circle at 85% 70%, rgba(37, 99, 235, 0.20), transparent 30%),
+                linear-gradient(160deg, #020617, #07111f 42%, #020617);
+        }
+
+        .start-grid
+        {
+            position: absolute;
+            inset: -80px;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+            background-size: 44px 44px;
+            transform: rotate(-7deg);
+            animation: gridMove 12s linear infinite;
+        }
+
+        @keyframes gridMove
+        {
+            from
+            {
+                transform: rotate(-7deg) translateY(0);
+            }
+
+            to
+            {
+                transform: rotate(-7deg) translateY(44px);
+            }
+        }
+
+        .lightning
+        {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            opacity: 0.85;
+            pointer-events: none;
+            filter: drop-shadow(0 0 18px #38bdf8);
+        }
+
+        .lightning.one
+        {
+            top: -35px;
+            left: -45px;
+            transform: rotate(10deg);
+        }
+
+        .lightning.two
+        {
+            bottom: -45px;
+            right: -55px;
+            transform: rotate(190deg);
+        }
+
+        .lightning svg
+        {
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-dot
+        {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22d3ee;
+            box-shadow: 0 0 16px rgba(34, 211, 238, 0.9);
+            animation: dotFloat 3s ease-in-out infinite alternate;
+        }
+
+        .dot-a
+        {
+            top: 18%;
+            right: 18%;
+        }
+
+        .dot-b
+        {
+            top: 34%;
+            left: 15%;
+            animation-delay: 0.5s;
+        }
+
+        .dot-c
+        {
+            bottom: 22%;
+            right: 12%;
+            animation-delay: 1s;
+        }
+
+        .dot-d
+        {
+            bottom: 32%;
+            left: 24%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes dotFloat
+        {
+            from
+            {
+                transform: translateY(0);
+                opacity: 0.45;
+            }
+
+            to
+            {
+                transform: translateY(-18px);
+                opacity: 1;
+            }
+        }
+
+        .start-card
+        {
+            position: relative;
+            z-index: 2;
+            width: min(520px, 100%);
+            min-height: min(690px, calc(100dvh - 36px));
+            padding: 32px 22px 28px;
+            border-radius: 34px;
+            background:
+                linear-gradient(180deg, rgba(15, 23, 42, 0.76), rgba(2, 6, 23, 0.95));
+            border: 1px solid rgba(125, 211, 252, 0.34);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+                0 0 65px rgba(34, 211, 238, 0.18),
+                0 32px 90px rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(14px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            text-align: center;
+        }
+
+        .start-logo-area
+        {
+            width: 130px;
+            height: 130px;
+            display: grid;
+            place-items: center;
+            position: relative;
+        }
+
+        .start-logo-circle
+        {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background:
+                conic-gradient(
+                    from 0deg,
+                    transparent,
+                    #22d3ee,
+                    #2dd4bf,
+                    transparent,
+                    #38bdf8,
+                    transparent
+                );
+            animation: startLogoSpin 4s linear infinite;
+            filter: drop-shadow(0 0 24px rgba(34, 211, 238, 0.55));
+        }
+
+        .start-logo-circle::after
+        {
+            content: "";
+            position: absolute;
+            inset: 9px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, rgba(15, 23, 42, 0.95), #020617);
+        }
+
+        @keyframes startLogoSpin
+        {
+            from
+            {
+                transform: rotate(0deg);
+            }
+
+            to
+            {
+                transform: rotate(360deg);
+            }
+        }
+
+        .start-logo-inner
+        {
+            position: relative;
+            z-index: 2;
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 44px;
+            color: #e0f2fe;
+            background:
+                radial-gradient(circle at 35% 30%, #155e75, #020617 72%);
+            border: 1px solid rgba(125, 211, 252, 0.55);
+            box-shadow:
+                inset 0 0 24px rgba(34, 211, 238, 0.15),
+                0 0 34px rgba(34, 211, 238, 0.42);
+            animation: logoPulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoPulse
+        {
+            from
+            {
+                transform: scale(0.96);
+            }
+
+            to
+            {
+                transform: scale(1.05);
+            }
+        }
+
+        .start-title
+        {
+            margin: 0;
+            color: white;
+            font-size: clamp(42px, 12vw, 66px);
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            text-shadow:
+                0 0 18px rgba(34, 211, 238, 0.35),
+                0 6px 22px rgba(0,0,0,0.55);
+        }
+
+        .start-title span
+        {
+            display: block;
+            color: #e0f2fe;
+        }
+
+        .clean-circuit-preview
+        {
+            position: relative;
+            width: min(350px, 100%);
+            height: 215px;
+            margin: 6px 0;
+            border-radius: 28px;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.10), transparent 55%),
+                linear-gradient(rgba(56, 189, 248, 0.055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.055) 1px, transparent 1px),
+                rgba(15, 23, 42, 0.42);
+            background-size:
+                100% 100%,
+                24px 24px,
+                24px 24px,
+                100% 100%;
+            border: 1px solid rgba(125, 211, 252, 0.24);
+            overflow: hidden;
+            box-shadow:
+                inset 0 0 30px rgba(34, 211, 238, 0.07),
+                0 14px 34px rgba(0, 0, 0, 0.30);
+        }
+
+        .clean-circuit-svg
+        {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .clean-wire
+        {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .main-wire
+        {
+            stroke: rgba(148, 163, 184, 0.65);
+            stroke-width: 8;
+        }
+
+        .current-wire
+        {
+            stroke: url(#wireGradient);
+            stroke-width: 5;
+            stroke-dasharray: 18 16;
+            animation: cleanCurrentMove 0.9s linear infinite;
+            filter: url(#softGlow);
+        }
+
+        @keyframes cleanCurrentMove
+        {
+            from
+            {
+                stroke-dashoffset: 0;
+            }
+
+            to
+            {
+                stroke-dashoffset: -34;
+            }
+        }
+
+        .landing-battery-icon rect:first-child
+        {
+            fill: #0f172a;
+            stroke: #e0f2fe;
+            stroke-width: 3.5;
+        }
+
+        .landing-battery-icon rect:nth-child(2)
+        {
+            fill: #e0f2fe;
+            stroke: none;
+        }
+
+        .landing-battery-icon rect:nth-child(3)
+        {
+            fill: #22c55e;
+            stroke: none;
+        }
+
+        .landing-battery-icon rect:nth-child(4)
+        {
+            fill: #facc15;
+            stroke: none;
+        }
+
+        .landing-battery-icon line
+        {
+            stroke: #020617;
+            stroke-width: 3.5;
+            stroke-linecap: round;
+        }
+
+        .landing-switch-icon rect
+        {
+            fill: rgba(15, 23, 42, 0.96);
+            stroke: #e0f2fe;
+            stroke-width: 3.5;
+        }
+
+        .landing-switch-icon circle
+        {
+            fill: #e0f2fe;
+            stroke: #38bdf8;
+            stroke-width: 2.5;
+        }
+
+        .landing-switch-arm
+        {
+            stroke: #67e8f9;
+            stroke-width: 6;
+            stroke-linecap: round;
+            transform-origin: 249px 61px;
+            animation: switchPreviewMove 1.4s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.8));
+        }
+
+        @keyframes switchPreviewMove
+        {
+            from
+            {
+                transform: rotate(-10deg);
+            }
+
+            to
+            {
+                transform: rotate(22deg);
+            }
+        }
+
+        .landing-resistor-icon line
+        {
+            stroke: #e0f2fe;
+            stroke-width: 5;
+            stroke-linecap: round;
+        }
+
+        .landing-resistor-icon rect:first-of-type
+        {
+            fill: #f59e0b;
+            stroke: #e0f2fe;
+            stroke-width: 3.5;
+        }
+
+        .landing-resistor-icon rect:nth-of-type(2)
+        {
+            fill: #7c2d12;
+        }
+
+        .landing-resistor-icon rect:nth-of-type(3)
+        {
+            fill: #0e7490;
+        }
+
+        .landing-resistor-icon rect:nth-of-type(4)
+        {
+            fill: #7c2d12;
+        }
+
+        .landing-bulb-halo
+        {
+            fill: rgba(250, 204, 21, 0.25);
+            animation: cleanBulbGlow 0.85s ease-in-out infinite alternate;
+        }
+
+        .landing-bulb-glass
+        {
+            fill: url(#bulbGradient);
+            stroke: #e0f2fe;
+            stroke-width: 3.5;
+            filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.85));
+        }
+
+        .landing-bulb-icon path
+        {
+            fill: none;
+            stroke: #92400e;
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+
+        .landing-bulb-icon rect
+        {
+            fill: #94a3b8;
+            stroke: #e0f2fe;
+            stroke-width: 3;
+        }
+
+        .landing-bulb-icon line
+        {
+            stroke: #475569;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        @keyframes cleanBulbGlow
+        {
+            from
+            {
+                opacity: 0.45;
+                transform: scale(0.92);
+                transform-origin: 262px 158px;
+            }
+
+            to
+            {
+                opacity: 1;
+                transform: scale(1.12);
+                transform-origin: 262px 158px;
+            }
+        }
+
+        .clean-circuit-svg text
+        {
+            fill: #cbd5e1;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .start-main-btn
+        {
+            width: min(280px, 100%);
+            border: none;
+            border-radius: 22px;
+            padding: 18px 26px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #022c22;
+            background:
+                linear-gradient(180deg, #67e8f9, #06b6d4);
+            box-shadow:
+                0 9px 0 #155e75,
+                0 0 34px rgba(34, 211, 238, 0.45);
+        }
+
+        .start-main-btn:active
+        {
+            transform: translateY(5px);
+            box-shadow:
+                0 4px 0 #155e75,
+                0 0 18px rgba(34, 211, 238, 0.2);
+        }
+
+        /* ===================== הסברים ===================== */
+
+        .explanations-screen
+        {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.18), transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(45, 212, 191, 0.12), transparent 35%),
+                linear-gradient(135deg, #020617, #0f172a, #111827);
+        }
+
+        .intro-card
+        {
+            width: min(430px, 100%);
+            min-height: 430px;
+            border-radius: 24px;
+            background: rgba(15, 23, 42, 0.94);
+            border: 1px solid rgba(125, 211, 252, 0.45);
+            box-shadow:
+                0 0 35px rgba(34, 211, 238, 0.18),
+                0 24px 60px rgba(0, 0, 0, 0.5);
+            padding: 22px;
+            display: grid;
+            grid-template-rows: 1fr auto;
+            gap: 18px;
+        }
+
+        .intro-page
+        {
+            display: none;
+            text-align: center;
+        }
+
+        .intro-page.active
+        {
+            display: block;
+        }
+
+        .intro-icon
+        {
+            width: 92px;
+            height: 92px;
+            border-radius: 28px;
+            margin: 0 auto 16px;
+            background: linear-gradient(145deg, #0e7490, #164e63);
+            border: 1px solid rgba(103, 232, 249, 0.5);
+            display: grid;
+            place-items: center;
+            font-size: 42px;
+            font-weight: bold;
+            color: #e0f2fe;
+            box-shadow: inset 0 -6px 0 rgba(0,0,0,0.25);
+        }
+
+        .intro-page h2
+        {
+            margin: 0 0 12px;
+            color: #67e8f9;
+            font-size: 24px;
+        }
+
+        .intro-page p
+        {
+            margin: 0;
+            color: #cbd5e1;
+            line-height: 1.65;
+            font-size: 16px;
+        }
+
+        .intro-actions
+        {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .intro-btn
+        {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(180deg, #0e7490, #155e75);
+            box-shadow: 0 5px 0 #083344;
+        }
+
+        .intro-btn.secondary
+        {
+            background: linear-gradient(180deg, #334155, #1e293b);
+            box-shadow: 0 5px 0 #0f172a;
+        }
+
+        .page-count
+        {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* ===================== מחסן רכיבים ===================== */
+
+        .toolbox
+        {
+            padding: 8px;
+            padding-top: max(8px, env(safe-area-inset-top));
+            background: rgba(15, 23, 42, 0.96);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.45);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .title-row
+        {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 7px;
+        }
+
+        h1
+        {
+            margin: 0;
+            font-size: 18px;
+            color: #67e8f9;
+            white-space: nowrap;
+        }
+
+        .help
+        {
+            font-size: 11px;
+            color: #cbd5e1;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(125, 211, 252, 0.35);
+            border-radius: 999px;
+            padding: 5px 8px;
+            white-space: nowrap;
+        }
+
+        .tools-area
+        {
+            display: grid;
+            grid-template-columns: 34px 1fr 34px;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tool-scroll-btn
+        {
+            width: 34px;
+            height: 58px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(180deg, #0e7490, #155e75);
+            color: white;
+            font-size: 26px;
+            font-weight: bold;
+            box-shadow: 0 5px 0 #083344;
+        }
+
+        .tools-scroll
+        {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #22d3ee #1e293b;
+            padding-bottom: 8px;
+        }
+
+        .tools-scroll::-webkit-scrollbar
+        {
+            height: 9px;
+        }
+
+        .tools-scroll::-webkit-scrollbar-track
+        {
+            background: #1e293b;
+            border-radius: 999px;
+        }
+
+        .tools-scroll::-webkit-scrollbar-thumb
+        {
+            background: #22d3ee;
+            border-radius: 999px;
+        }
+
+        .tools
+        {
+            display: flex;
+            gap: 7px;
+            min-width: max-content;
+        }
+
+        .tool
+        {
+            width: 58px;
+            height: 60px;
+            border-radius: 13px;
+            border: 1px solid rgba(125, 211, 252, 0.35);
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            color: #e5e7eb;
+            box-shadow: 0 5px 13px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: grab;
+            flex: 0 0 auto;
+            touch-action: none;
+        }
+
+        .tool-icon
+        {
+            width: 27px;
+            height: 27px;
+            border-radius: 9px;
+            background: linear-gradient(145deg, #0e7490, #164e63);
+            border: 1px solid rgba(103, 232, 249, 0.35);
+            color: #e0f2fe;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .tool-name
+        {
+            font-size: 8px;
+            line-height: 1.05;
+            text-align: center;
+        }
+
+        .fake-scrollbar
+        {
+            height: 7px;
+            margin-top: 5px;
+            border-radius: 999px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(125, 211, 252, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fake-scrollbar-thumb
+        {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 35%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #22d3ee, #2dd4bf);
+            box-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
+        }
+
+        /* ===================== לוח המשחק ===================== */
+
+        .game
+        {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-panel
+        {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            left: 8px;
+            z-index: 5;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .messages
+        {
+            display: grid;
+            gap: 5px;
+            pointer-events: auto;
+        }
+
+        .status,
+        .current,
+        .resistance
+        {
+            min-height: 34px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(125, 211, 252, 0.45);
+            color: #e5e7eb;
+            padding: 6px 9px;
+            font-size: 11.5px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+        }
+
+        .current
+        {
+            border-color: rgba(45, 212, 191, 0.65);
+            background: rgba(6, 78, 59, 0.58);
+            color: #ccfbf1;
+        }
+
+        .resistance
+        {
+            border-color: rgba(250, 204, 21, 0.65);
+            background: rgba(120, 53, 15, 0.58);
+            color: #fef3c7;
+        }
+
+        .clear-btn
+        {
+            pointer-events: auto;
+            height: 34px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #0e7490, #155e75);
+            color: white;
+            font-weight: bold;
+            padding: 0 11px;
+            box-shadow: 0 5px 0 #083344;
+        }
+
+        #board
+        {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            background-color: #020617;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+                radial-gradient(circle at 20px 20px, rgba(45, 212, 191, 0.14) 2px, transparent 2px);
+            background-size: 40px 40px, 40px 40px, 40px 40px;
+            touch-action: none;
+        }
+
+        #wires
+        {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .wire
+        {
+            stroke: #38bdf8;
+            stroke-width: 7;
+            stroke-linecap: round;
+            fill: none;
+            filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.45));
+        }
+
+        .wire.active
+        {
+            stroke: #2dd4bf;
+            stroke-dasharray: 15 9;
+            animation: moveWire 0.7s infinite linear;
+            filter: drop-shadow(0 0 10px rgba(45, 212, 191, 0.9));
+        }
+
+        @keyframes moveWire
+        {
+            from
+            {
+                stroke-dashoffset: 0;
+            }
+
+            to
+            {
+                stroke-dashoffset: -24;
+            }
+        }
+
+        .part
+        {
+            position: absolute;
+            width: 72px;
+            min-height: 72px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.48);
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            color: #e5e7eb;
+            z-index: 2;
+            padding: 5px;
+            text-align: center;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
+            touch-action: none;
+        }
+
+        .part.selected
+        {
+            outline: 3px solid #22d3ee;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.45);
+        }
+
+        .part-icon
+        {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            margin: 0 auto;
+        }
+
+        .label
+        {
+            margin-top: 4px;
+            font-size: 9px;
+            font-weight: bold;
+            min-height: 13px;
+        }
+
+        .connector
+        {
+            position: absolute;
+            top: 50%;
+            width: 19px;
+            height: 19px;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            border: 3px solid #020617;
+            background: #22d3ee;
+            box-shadow:
+                0 0 0 3px rgba(34, 211, 238, 0.28),
+                0 0 12px rgba(34, 211, 238, 0.7);
+            z-index: 4;
+        }
+
+        .connector.left
+        {
+            left: -10px;
+        }
+
+        .connector.right
+        {
+            right: -10px;
+        }
+
+        .battery
+        {
+            background: linear-gradient(180deg, #1e3a8a, #172554);
+        }
+
+        .bulb
+        {
+            background: linear-gradient(180deg, #164e63, #083344);
+        }
+
+        .radio
+        {
+            background: linear-gradient(180deg, #374151, #111827);
+        }
+
+        .switch
+        {
+            background: linear-gradient(180deg, #14532d, #052e16);
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .resistor
+        {
+            background: linear-gradient(180deg, #78350f, #451a03);
+        }
+
+        .ammeter
+        {
+            background: linear-gradient(180deg, #312e81, #1e1b4b);
+        }
+
+        .voltmeter
+        {
+            background: linear-gradient(180deg, #065f46, #022c22);
+        }
+
+        .battery-shape
+        {
+            position: absolute;
+            left: 3px;
+            top: 8px;
+            width: 28px;
+            height: 23px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #22c55e 0 50%, #facc15 50% 100%);
+            border: 2px solid #e5e7eb;
+        }
+
+        .battery-shape::after
+        {
+            content: "";
+            position: absolute;
+            right: -7px;
+            top: 6px;
+            width: 5px;
+            height: 9px;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
+
+        .battery-plus,
+        .battery-minus
+        {
+            position: absolute;
+            top: 13px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #020617;
+        }
+
+        .battery-plus
+        {
+            left: 8px;
+        }
+
+        .battery-minus
+        {
+            left: 21px;
+        }
+
+        .bulb-shape
+        {
+            position: absolute;
+            left: 7px;
+            top: 1px;
+            width: 23px;
+            height: 27px;
+            border-radius: 50% 50% 42% 42%;
+            background: radial-gradient(circle at 35% 25%, #ffffff, #fde68a 45%, #facc15);
+            border: 2px solid #e5e7eb;
+        }
+
+        .bulb-base
+        {
+            position: absolute;
+            left: 12px;
+            top: 27px;
+            width: 14px;
+            height: 10px;
+            border-radius: 4px;
+            background: repeating-linear-gradient(180deg, #d1d5db, #d1d5db 3px, #6b7280 3px, #6b7280 6px);
+            border: 2px solid #e5e7eb;
+        }
+
+        .bulb .glow
+        {
+            display: none;
+            position: absolute;
+            inset: -24px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(250, 204, 21, 0.75), rgba(250, 204, 21, 0.18), transparent 70%);
+            z-index: -1;
+            animation: bulbGlow 0.7s infinite alternate;
+        }
+
+        .bulb.on .glow
+        {
+            display: block;
+        }
+
+        .bulb.on .bulb-shape
+        {
+            box-shadow:
+                0 0 18px #facc15,
+                0 0 34px #fde68a;
+        }
+
+        @keyframes bulbGlow
+        {
+            from
+            {
+                transform: scale(0.94);
+                opacity: 0.7;
+            }
+
+            to
+            {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        .radio-antenna
+        {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            width: 3px;
+            height: 17px;
+            background: #e5e7eb;
+            transform: rotate(35deg);
+            border-radius: 3px;
+        }
+
+        .radio-body
+        {
+            position: absolute;
+            left: 2px;
+            top: 10px;
+            width: 33px;
+            height: 25px;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #64748b, #334155);
+            border: 2px solid #e5e7eb;
+        }
+
+        .radio-body::before
+        {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 7px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #e0f2fe;
+            border: 2px solid #0f172a;
+        }
+
+        .radio-body::after
+        {
+            content: "";
+            position: absolute;
+            right: 5px;
+            top: 7px;
+            width: 10px;
+            height: 12px;
+            background: repeating-linear-gradient(90deg, #e5e7eb, #e5e7eb 2px, transparent 2px, transparent 5px);
+        }
+
+        .radio.singing
+        {
+            animation: radioMove 0.35s infinite alternate;
+        }
+
+        .radio.singing::after
+        {
+            content: "♪ ♫";
+            position: absolute;
+            top: -22px;
+            right: 18px;
+            font-size: 16px;
+            color: #67e8f9;
+            animation: notes 0.8s infinite alternate;
+        }
+
+        @keyframes radioMove
+        {
+            from
+            {
+                transform: rotate(-2deg);
+            }
+
+            to
+            {
+                transform: rotate(2deg);
+            }
+        }
+
+        @keyframes notes
+        {
+            from
+            {
+                opacity: 0.4;
+                transform: translateY(0);
+            }
+
+            to
+            {
+                opacity: 1;
+                transform: translateY(-7px);
+            }
+        }
+
+        .switch-toggle
+        {
+            width: 42px;
+            height: 34px;
+            border: none;
+            border-radius: 13px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.65);
+            color: #fecaca;
+            display: grid;
+            place-items: center;
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.15),
+                0 0 12px rgba(239, 68, 68, 0.35);
+            touch-action: manipulation;
+            pointer-events: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .switch.closed .switch-toggle
+        {
+            color: #bbf7d0;
+            background: rgba(22, 163, 74, 0.25);
+            box-shadow:
+                inset 0 0 0 1px rgba(187, 247, 208, 0.3),
+                0 0 14px rgba(34, 197, 94, 0.35);
+        }
+
+        .switch-symbol
+        {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .switch-track
+        {
+            width: 43px;
+            height: 21px;
+            border-radius: 999px;
+            margin: 4px auto 0;
+            background: #7f1d1d;
+            border: 2px solid rgba(255,255,255,0.7);
+            position: relative;
+        }
+
+        .switch-knob
+        {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: white;
+            transition: right 0.18s;
+        }
+
+        .switch.closed .switch-track
+        {
+            background: #16a34a;
+        }
+
+        .switch.closed .switch-knob
+        {
+            right: 24px;
+        }
+
+        .resistor-shape
+        {
+            position: absolute;
+            left: 3px;
+            top: 15px;
+            width: 31px;
+            height: 11px;
+            border-radius: 7px;
+            background: linear-gradient(90deg, #f59e0b, #fde68a, #f59e0b);
+            border: 2px solid #e5e7eb;
+        }
+
+        .resistor-shape::before,
+        .resistor-shape::after
+        {
+            content: "";
+            position: absolute;
+            top: 4px;
+            width: 8px;
+            height: 2px;
+            background: #e5e7eb;
+        }
+
+        .resistor-shape::before
+        {
+            left: -9px;
+        }
+
+        .resistor-shape::after
+        {
+            right: -9px;
+        }
+
+        .resistor-band
+        {
+            position: absolute;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #0f172a;
+        }
+
+        .resistor-band.one
+        {
+            left: 9px;
+        }
+
+        .resistor-band.two
+        {
+            left: 18px;
+            background: #0e7490;
+        }
+
+        .meter-shape
+        {
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 33px;
+            height: 33px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #ffffff, #dbeafe);
+            border: 2px solid #e5e7eb;
+            display: grid;
+            place-items: center;
+            color: #0f172a;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .meter-needle
+        {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            width: 13px;
+            height: 3px;
+            background: #ef4444;
+            border-radius: 3px;
+            transform-origin: left center;
+            transform: rotate(-35deg);
+        }
+
+        .part.on .meter-needle
+        {
+            transform: rotate(25deg);
+        }
+
+        .drag-ghost
+        {
+            position: fixed;
+            z-index: 2000;
+            width: 58px;
+            height: 60px;
+            border-radius: 13px;
+            border: 1px solid #22d3ee;
+            background: linear-gradient(180deg, #164e63, #0f172a);
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            pointer-events: none;
+            opacity: 0.9;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.55);
+        }
+
+        .spark
+        {
+            position: absolute;
+            z-index: 10;
+            color: #67e8f9;
+            font-size: 18px;
+            pointer-events: none;
+            animation: sparkAnim 0.8s forwards;
+        }
+
+        @keyframes sparkAnim
+        {
+            from
+            {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to
+            {
+                opacity: 0;
+                transform: translateY(-28px) scale(1.4);
+            }
+        }
+
+
+        /* ===================== אייקון מתג בלי תו מיוחד ===================== */
+
+        .tool-switch-icon
+        {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-switch-dot
+        {
+            position: absolute;
+            bottom: 7px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #e0f2fe;
+            box-shadow: 0 0 6px rgba(224, 242, 254, 0.6);
+        }
+
+        .tool-switch-dot.dot-a
+        {
+            left: 7px;
+        }
+
+        .tool-switch-dot.dot-b
+        {
+            right: 7px;
+        }
+
+        .tool-switch-line
+        {
+            position: absolute;
+            left: 10px;
+            bottom: 11px;
+            width: 18px;
+            height: 4px;
+            border-radius: 999px;
+            background: #67e8f9;
+            transform: rotate(-24deg);
+            transform-origin: left center;
+            box-shadow: 0 0 8px rgba(103, 232, 249, 0.8);
+        }
+
+        .switch-toggle-icon
+        {
+            position: relative;
+            width: 28px;
+            height: 22px;
+            display: block;
+        }
+
+        .switch-toggle-dot
+        {
+            position: absolute;
+            bottom: 4px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #e0f2fe;
+            box-shadow: 0 0 6px rgba(224, 242, 254, 0.6);
+        }
+
+        .switch-toggle-dot.dot-a
+        {
+            left: 2px;
+        }
+
+        .switch-toggle-dot.dot-b
+        {
+            right: 2px;
+        }
+
+        .switch-toggle-line
+        {
+            position: absolute;
+            left: 6px;
+            bottom: 8px;
+            width: 20px;
+            height: 4px;
+            border-radius: 999px;
+            background: #fecaca;
+            transform: rotate(-25deg);
+            transform-origin: left center;
+            box-shadow: 0 0 8px rgba(248, 113, 113, 0.75);
+            transition: transform 0.18s, background 0.18s;
+        }
+
+        .switch.closed .switch-toggle-line
+        {
+            background: #bbf7d0;
+            transform: rotate(0deg);
+            box-shadow: 0 0 9px rgba(34, 197, 94, 0.85);
+        }
+
+        .switch-symbol
+        {
+            display: none;
+        }
+
+        @media (max-width: 420px)
+        {
+            .landing-screen
+            {
+                padding: 14px;
+            }
+
+            .start-card
+            {
+                min-height: calc(100dvh - 28px);
+                border-radius: 28px;
+                padding: 26px 18px;
+                gap: 14px;
+            }
+
+            .start-logo-area
+            {
+                width: 112px;
+                height: 112px;
+            }
+
+            .start-logo-inner
+            {
+                width: 72px;
+                height: 72px;
+                font-size: 38px;
+            }
+
+            .clean-circuit-preview
+            {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 360px)
+        {
+            h1
+            {
+                font-size: 16px;
+            }
+
+            .help
+            {
+                display: none;
+            }
+
+            .tool
+            {
+                width: 54px;
+                height: 57px;
+            }
+
+            .tool-name
+            {
+                font-size: 7.5px;
+            }
+
+            .part
+            {
+                width: 66px;
+                min-height: 68px;
+            }
+
+            .tools-area
+            {
+                grid-template-columns: 30px 1fr 30px;
+                gap: 4px;
+            }
+
+            .tool-scroll-btn
+            {
+                width: 30px;
+                height: 56px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="introOverlay" class="intro-overlay">
+        <div id="landingScreen" class="landing-screen">
+            <div class="start-grid"></div>
+
+            <div class="lightning one">
+                <svg viewBox="0 0 200 200">
+                    <polyline points="35,0 55,45 42,45 72,105 58,105 95,200"
+                              fill="none" stroke="#38bdf8" stroke-width="5" stroke-linejoin="round" />
+                </svg>
+            </div>
+
+            <div class="lightning two">
+                <svg viewBox="0 0 200 200">
+                    <polyline points="35,0 55,45 42,45 72,105 58,105 95,200"
+                              fill="none" stroke="#38bdf8" stroke-width="5" stroke-linejoin="round" />
+                </svg>
+            </div>
+
+            <div class="floating-dot dot-a"></div>
+            <div class="floating-dot dot-b"></div>
+            <div class="floating-dot dot-c"></div>
+            <div class="floating-dot dot-d"></div>
+
+            <div class="start-card">
+                <div class="start-logo-area">
+                    <div class="start-logo-circle"></div>
+                    <div class="start-logo-inner">⚡</div>
+                </div>
+
+                <h1 class="start-title">
+                    מעבדת
+                    <span>מולטימדיה</span>
+                </h1>
+
+                <div class="start-preview clean-circuit-preview">
+                    <svg class="clean-circuit-svg" viewBox="0 0 360 210" aria-label="איור של מעגל חשמלי">
+                        <defs>
+                            <filter id="softGlow">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+
+                            <linearGradient id="wireGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#2dd4bf" />
+                                <stop offset="50%" stop-color="#38bdf8" />
+                                <stop offset="100%" stop-color="#2dd4bf" />
+                            </linearGradient>
+
+                            <radialGradient id="bulbGradient" cx="35%" cy="25%" r="70%">
+                                <stop offset="0%" stop-color="#ffffff" />
+                                <stop offset="45%" stop-color="#fde68a" />
+                                <stop offset="100%" stop-color="#facc15" />
+                            </radialGradient>
+                        </defs>
+
+                        <path
+                            class="clean-wire main-wire"
+                            d="M 84 62
+                               H 276
+                               Q 306 62 306 92
+                               V 128
+                               Q 306 158 276 158
+                               H 84
+                               Q 54 158 54 128
+                               V 92
+                               Q 54 62 84 62"
+                        />
+
+                        <path
+                            class="clean-wire current-wire"
+                            d="M 84 62
+                               H 276
+                               Q 306 62 306 92
+                               V 128
+                               Q 306 158 276 158
+                               H 84
+                               Q 54 158 54 128
+                               V 92
+                               Q 54 62 84 62"
+                        />
+
+                        <g class="landing-battery-icon">
+                            <rect x="72" y="38" width="66" height="46" rx="13" />
+                            <rect x="138" y="53" width="9" height="16" rx="3" />
+                            <rect x="78" y="44" width="28" height="34" rx="8" />
+                            <rect x="106" y="44" width="26" height="34" rx="8" />
+                            <line x1="92" y1="52" x2="92" y2="68" />
+                            <line x1="84" y1="60" x2="100" y2="60" />
+                            <line x1="114" y1="60" x2="126" y2="60" />
+                        </g>
+
+                        <g class="landing-switch-icon">
+                            <rect x="231" y="37" width="72" height="48" rx="16" />
+                            <circle cx="249" cy="61" r="8" />
+                            <circle cx="285" cy="61" r="8" />
+                            <line class="landing-switch-arm" x1="249" y1="61" x2="279" y2="48" />
+                        </g>
+
+                        <g class="landing-resistor-icon">
+                            <line x1="82" y1="158" x2="108" y2="158" />
+                            <rect x="108" y="142" width="74" height="32" rx="14" />
+                            <line x1="182" y1="158" x2="208" y2="158" />
+                            <rect x="124" y="142" width="5" height="32" rx="2" />
+                            <rect x="140" y="142" width="5" height="32" rx="2" />
+                            <rect x="156" y="142" width="5" height="32" rx="2" />
+                        </g>
+
+                        <g class="landing-bulb-icon">
+                            <circle class="landing-bulb-halo" cx="262" cy="158" r="38" />
+                            <circle class="landing-bulb-glass" cx="262" cy="145" r="24" />
+                            <path d="M 249 162 Q 262 172 275 162" />
+                            <rect x="250" y="168" width="24" height="19" rx="6" />
+                            <line x1="253" y1="174" x2="271" y2="174" />
+                            <line x1="253" y1="180" x2="271" y2="180" />
+                        </g>
+
+                        <text x="105" y="29" text-anchor="middle">סוללה</text>
+                        <text x="267" y="29" text-anchor="middle">מתג</text>
+                        <text x="145" y="199" text-anchor="middle">נגד</text>
+                        <text x="262" y="199" text-anchor="middle">נורה</text>
+                    </svg>
+                </div>
+
+                <button id="startLandingBtn" class="start-main-btn">התחל</button>
+            </div>
+        </div>
+
+        <div id="explanationsScreen" class="explanations-screen">
+            <div class="intro-card">
+                <section class="intro-page active">
+                    <div class="intro-icon">🔋</div>
+                    <h2>סוללה</h2>
+                    <p>
+                        הסוללה היא מקור האנרגיה של המעגל.
+                        היא יוצרת מתח חשמלי, שדוחף את הזרם דרך החוטים והרכיבים.
+                    </p>
+                </section>
+
+                <section class="intro-page">
+                    <div class="intro-icon">〰</div>
+                    <h2>חוטים</h2>
+                    <p>
+                        החוטים מחברים בין הרכיבים.
+                        כדי שהמעגל יעבוד, צריך ליצור מסלול סגור.
+                    </p>
+                </section>
+
+                <section class="intro-page">
+                    <div class="intro-icon">מתג</div>
+                    <h2>מתג</h2>
+                    <p>
+                        המתג פותח או סוגר את המעגל.
+                        כשהמתג פתוח אין זרם, וכשהוא סגור הזרם יכול לזרום.
+                    </p>
+                </section>
+
+                <section class="intro-page">
+                    <div class="intro-icon">💡</div>
+                    <h2>נורה ורדיו</h2>
+                    <p>
+                        הנורה והרדיו משתמשים בחשמל.
+                        כשהמעגל עובד, הנורה נדלקת והרדיו משמיע צלילים.
+                    </p>
+                </section>
+
+                <section class="intro-page">
+                    <div class="intro-icon">Ω</div>
+                    <h2>נגדים</h2>
+                    <p>
+                        נגד מקשה על מעבר הזרם.
+                        ככל שההתנגדות גדולה יותר, הזרם קטן יותר.
+                    </p>
+                </section>
+
+                <section class="intro-page">
+                    <div class="intro-icon">A/V</div>
+                    <h2>מד זרם ומד מתח</h2>
+                    <p>
+                        מד זרם מציג את הזרם במעגל.
+                        מד מתח מציג את מתח הסוללה.
+                    </p>
+                </section>
+
+                <section class="intro-page">
+                    <div class="intro-icon">🎮</div>
+                    <h2>איך נבנה את המעגל?</h2>
+                    <p>
+                        גררו רכיבים מהסרגל ללוח.
+                        לחצו על נקודות כחולות כדי לחבר חוטים.
+                        לחצו על כפתור המתג כדי לפתוח או לסגור אותו.
+                    </p>
+                </section>
+
+                <div class="intro-actions">
+                    <button id="backIntroBtn" class="intro-btn secondary">הקודם</button>
+                    <span id="pageCount" class="page-count">1 / 7</span>
+                    <button id="nextIntroBtn" class="intro-btn">הבא</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app">
+        <header class="toolbox">
+            <div class="title-row">
+                <h1>⚡ מעבדת מולטימדיה</h1>
+                <div class="help">גררו רכיבים ללוח</div>
+            </div>
+
+            <div class="tools-area">
+                <button id="scrollRightBtn" class="tool-scroll-btn">‹</button>
+
+                <div id="toolsScroll" class="tools-scroll">
+                    <div class="tools">
+                        <div class="tool" data-type="battery">
+                            <div class="tool-icon">🔋</div>
+                            <div class="tool-name">סוללה</div>
+                        </div>
+
+                        <div class="tool" data-type="bulb">
+                            <div class="tool-icon">💡</div>
+                            <div class="tool-name">נורה</div>
+                        </div>
+
+                        <div class="tool" data-type="radio">
+                            <div class="tool-icon">📻</div>
+                            <div class="tool-name">רדיו</div>
+                        </div>
+
+                        <div class="tool" data-type="switch">
+                            <div class="tool-icon tool-switch-icon">
+                                <span class="tool-switch-dot dot-a"></span>
+                                <span class="tool-switch-dot dot-b"></span>
+                                <span class="tool-switch-line"></span>
+                            </div>
+                            <div class="tool-name">מתג</div>
+                        </div>
+
+                        <div class="tool" data-type="resistor10">
+                            <div class="tool-icon">10Ω</div>
+                            <div class="tool-name">נגד</div>
+                        </div>
+
+                        <div class="tool" data-type="resistor20">
+                            <div class="tool-icon">20Ω</div>
+                            <div class="tool-name">נגד</div>
+                        </div>
+
+                        <div class="tool" data-type="resistor50">
+                            <div class="tool-icon">50Ω</div>
+                            <div class="tool-name">נגד</div>
+                        </div>
+
+                        <div class="tool" data-type="ammeter">
+                            <div class="tool-icon">A</div>
+                            <div class="tool-name">מד זרם</div>
+                        </div>
+
+                        <div class="tool" data-type="voltmeter">
+                            <div class="tool-icon">V</div>
+                            <div class="tool-name">מד מתח</div>
+                        </div>
+
+                        <div class="tool" data-type="wire-help">
+                            <div class="tool-icon">〰</div>
+                            <div class="tool-name">חוט</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="scrollLeftBtn" class="tool-scroll-btn">›</button>
+            </div>
+
+            <div class="fake-scrollbar">
+                <div id="fakeThumb" class="fake-scrollbar-thumb"></div>
+            </div>
+        </header>
+
+        <main class="game">
+            <div id="board">
+                <svg id="wires"></svg>
+            </div>
+
+            <div class="info-panel">
+                <div class="messages">
+                    <div id="status" class="status">גררו רכיב מהסרגל אל הלוח כדי להתחיל</div>
+                    <div id="currentText" class="current">זרם חשמלי: 0.00 אמפר</div>
+                    <div id="resistanceText" class="resistance">התנגדות כוללת: 0Ω</div>
+                </div>
+
+                <button id="clearBtn" class="clear-btn">ניקוי</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const introOverlay = document.getElementById("introOverlay");
+        const landingScreen = document.getElementById("landingScreen");
+        const explanationsScreen = document.getElementById("explanationsScreen");
+        const startLandingBtn = document.getElementById("startLandingBtn");
+
+        const introPages = document.querySelectorAll(".intro-page");
+        const nextIntroBtn = document.getElementById("nextIntroBtn");
+        const backIntroBtn = document.getElementById("backIntroBtn");
+        const pageCount = document.getElementById("pageCount");
+
+        let introIndex = 0;
+
+        function showIntroPage(index)
+        {
+            introPages.forEach(page => page.classList.remove("active"));
+            introPages[index].classList.add("active");
+
+            pageCount.textContent = (index + 1) + " / " + introPages.length;
+            backIntroBtn.style.visibility = index === 0 ? "hidden" : "visible";
+
+            nextIntroBtn.textContent = index === introPages.length - 1 ? "למשחק" : "הבא";
+        }
+
+        startLandingBtn.addEventListener("click", function()
+        {
+            landingScreen.style.display = "none";
+            explanationsScreen.style.display = "flex";
+            introIndex = 0;
+            showIntroPage(introIndex);
+        });
+
+        nextIntroBtn.addEventListener("click", function()
+        {
+            if (introIndex < introPages.length - 1)
+            {
+                introIndex++;
+                showIntroPage(introIndex);
+            }
+            else
+            {
+                introOverlay.style.display = "none";
+            }
+        });
+
+        backIntroBtn.addEventListener("click", function()
+        {
+            if (introIndex > 0)
+            {
+                introIndex--;
+                showIntroPage(introIndex);
+            }
+        });
+
+        showIntroPage(0);
+
+        const board = document.getElementById("board");
+        const wiresSvg = document.getElementById("wires");
+        const statusEl = document.getElementById("status");
+        const currentEl = document.getElementById("currentText");
+        const resistanceEl = document.getElementById("resistanceText");
+        const clearBtn = document.getElementById("clearBtn");
+        const tools = document.querySelectorAll(".tool");
+        const toolsScroll = document.getElementById("toolsScroll");
+        const fakeThumb = document.getElementById("fakeThumb");
+        const scrollRightBtn = document.getElementById("scrollRightBtn");
+        const scrollLeftBtn = document.getElementById("scrollLeftBtn");
+
+        let parts = [];
+        let wires = [];
+        let nextId = 1;
+        let selectedConnector = null;
+
+        let draggingPart = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        let draggingToolType = null;
+        let ghost = null;
+
+        let audioContext = null;
+        let radioTimer = null;
+        let lastSwitchToggleTime = 0;
+        let switchTapStartX = 0;
+        let switchTapStartY = 0;
+
+        const batteryVoltage = 9;
+        const bulbResistance = 6;
+        const radioResistance = 12;
+        const ammeterResistance = 0.2;
+        const voltmeterResistance = 1000;
+        const wireResistance = 0.5;
+
+        const partInfo =
+        {
+            battery:
+            {
+                label: "סוללה 9V",
+                className: "battery",
+                resistance: 0,
+                html:
+                `
+                    <div class="part-icon">
+                        <div class="battery-shape"></div>
+                        <div class="battery-plus">+</div>
+                        <div class="battery-minus">−</div>
+                    </div>
+                `
+            },
+
+            bulb:
+            {
+                label: "נורה",
+                className: "bulb",
+                resistance: bulbResistance,
+                html:
+                `
+                    <div class="glow"></div>
+                    <div class="part-icon">
+                        <div class="bulb-shape"></div>
+                        <div class="bulb-base"></div>
+                    </div>
+                `
+            },
+
+            radio:
+            {
+                label: "רדיו",
+                className: "radio",
+                resistance: radioResistance,
+                html:
+                `
+                    <div class="part-icon">
+                        <div class="radio-antenna"></div>
+                        <div class="radio-body"></div>
+                    </div>
+                `
+            },
+
+            switch:
+            {
+                label: "מתג פתוח",
+                className: "switch",
+                resistance: 0,
+                html:
+                `
+                    <button class="switch-toggle" type="button" aria-label="מתג">
+                        <span class="switch-toggle-icon">
+                            <span class="switch-toggle-dot dot-a"></span>
+                            <span class="switch-toggle-dot dot-b"></span>
+                            <span class="switch-toggle-line"></span>
+                        </span>
+                    </button>
+
+                    <div class="switch-track">
+                        <div class="switch-knob"></div>
+                    </div>
+                `
+            },
+
+            resistor10:
+            {
+                label: "נגד 10Ω",
+                className: "resistor",
+                resistance: 10,
+                html:
+                `
+                    <div class="part-icon">
+                        <div class="resistor-shape">
+                            <div class="resistor-band one"></div>
+                            <div class="resistor-band two"></div>
+                        </div>
+                    </div>
+                `
+            },
+
+            resistor20:
+            {
+                label: "נגד 20Ω",
+                className: "resistor",
+                resistance: 20,
+                html:
+                `
+                    <div class="part-icon">
+                        <div class="resistor-shape">
+                            <div class="resistor-band one"></div>
+                            <div class="resistor-band two"></div>
+                        </div>
+                    </div>
+                `
+            },
+
+            resistor50:
+            {
+                label: "נגד 50Ω",
+                className: "resistor",
+                resistance: 50,
+                html:
+                `
+                    <div class="part-icon">
+                        <div class="resistor-shape">
+                            <div class="resistor-band one"></div>
+                            <div class="resistor-band two"></div>
+                        </div>
+                    </div>
+                `
+            },
+
+            ammeter:
+            {
+                label: "מד זרם",
+                className: "ammeter",
+                resistance: ammeterResistance,
+                html:
+                `
+                    <div class="part-icon">
+                        <div class="meter-shape">
+                            A
+                            <div class="meter-needle"></div>
+                        </div>
+                    </div>
+                `
+            },
+
+            voltmeter:
+            {
+                label: "מד מתח",
+                className: "voltmeter",
+                resistance: voltmeterResistance,
+                html:
+                `
+                    <div class="part-icon">
+                        <div class="meter-shape">
+                            V
+                            <div class="meter-needle"></div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        tools.forEach(tool =>
+        {
+            tool.addEventListener("pointerdown", function(event)
+            {
+                const type = tool.dataset.type;
+
+                if (type === "wire-help")
+                {
+                    statusEl.textContent = "כדי ליצור חוט: לחצו על נקודה כחולה ברכיב אחד ואז על נקודה כחולה ברכיב אחר";
+                    return;
+                }
+
+                event.preventDefault();
+
+                draggingToolType = type;
+                createGhost(tool, event.clientX, event.clientY);
+            });
+        });
+
+        document.addEventListener("pointermove", function(event)
+        {
+            if (draggingToolType)
+            {
+                event.preventDefault();
+                moveGhost(event.clientX, event.clientY);
+                return;
+            }
+
+            if (!draggingPart)
+            {
+                return;
+            }
+
+            event.preventDefault();
+            moveDraggedPart(event.clientX, event.clientY);
+        }, { passive: false });
+
+        document.addEventListener("pointerup", function(event)
+        {
+            if (draggingToolType)
+            {
+                const boardRect = board.getBoundingClientRect();
+
+                const insideBoard =
+                    event.clientX >= boardRect.left &&
+                    event.clientX <= boardRect.right &&
+                    event.clientY >= boardRect.top &&
+                    event.clientY <= boardRect.bottom;
+
+                if (insideBoard)
+                {
+                    const point = getBoardPoint(event.clientX, event.clientY);
+                    addPart(draggingToolType, point.x - 36, point.y - 36);
+                }
+
+                draggingToolType = null;
+                removeGhost();
+                return;
+            }
+
+            stopDragging();
+        });
+
+        function createGhost(tool, x, y)
+        {
+            removeGhost();
+
+            ghost = tool.cloneNode(true);
+            ghost.classList.add("drag-ghost");
+            document.body.appendChild(ghost);
+            moveGhost(x, y);
+        }
+
+        function moveGhost(x, y)
+        {
+            if (!ghost)
+            {
+                return;
+            }
+
+            ghost.style.left = x + "px";
+            ghost.style.top = y + "px";
+        }
+
+        function removeGhost()
+        {
+            if (ghost)
+            {
+                ghost.remove();
+                ghost = null;
+            }
+        }
+
+        scrollRightBtn.addEventListener("click", function()
+        {
+            toolsScroll.scrollBy({ left: -180, behavior: "smooth" });
+        });
+
+        scrollLeftBtn.addEventListener("click", function()
+        {
+            toolsScroll.scrollBy({ left: 180, behavior: "smooth" });
+        });
+
+        toolsScroll.addEventListener("scroll", updateFakeScrollbar);
+
+        function updateFakeScrollbar()
+        {
+            const maxScroll = toolsScroll.scrollWidth - toolsScroll.clientWidth;
+
+            if (maxScroll <= 0)
+            {
+                fakeThumb.style.width = "100%";
+                fakeThumb.style.right = "0%";
+                return;
+            }
+
+            const visibleRatio = toolsScroll.clientWidth / toolsScroll.scrollWidth;
+            const thumbWidth = Math.max(18, visibleRatio * 100);
+            const scrollRatio = Math.abs(toolsScroll.scrollLeft) / maxScroll;
+            const maxMove = 100 - thumbWidth;
+
+            fakeThumb.style.width = thumbWidth + "%";
+            fakeThumb.style.right = Math.min(maxMove, scrollRatio * maxMove) + "%";
+        }
+
+        setTimeout(updateFakeScrollbar, 150);
+
+        clearBtn.addEventListener("click", function()
+        {
+            parts.forEach(part => part.element.remove());
+
+            parts = [];
+            wires = [];
+            selectedConnector = null;
+            nextId = 1;
+
+            renderWires(false);
+            stopRadio();
+
+            statusEl.textContent = "גררו רכיב מהסרגל אל הלוח כדי להתחיל";
+            currentEl.textContent = "זרם חשמלי: 0.00 אמפר";
+            resistanceEl.textContent = "התנגדות כוללת: 0Ω";
+        });
+
+        function addPart(type, x, y)
+        {
+            const info = partInfo[type];
+            const id = "part_" + nextId++;
+
+            const element = document.createElement("div");
+            element.className = "part " + info.className;
+            element.dataset.id = id;
+            element.dataset.type = type;
+
+            const safe = clampToBoard(x, y);
+            element.style.left = safe.x + "px";
+            element.style.top = safe.y + "px";
+
+            element.innerHTML =
+            `
+                ${info.html}
+                <div class="label">${info.label}</div>
+                <div class="connector left" data-side="left"></div>
+                <div class="connector right" data-side="right"></div>
+            `;
+
+            board.appendChild(element);
+
+            const model =
+            {
+                id: id,
+                type: type,
+                element: element,
+                closed: type !== "switch"
+            };
+
+            parts.push(model);
+
+            setupPartDragging(model);
+            setupConnectors(model);
+
+            if (type === "switch")
+            {
+                setupSwitchTap(model);
+            }
+
+            evaluateCircuit();
+        }
+
+        function setupSwitchTap(model)
+        {
+            const element = model.element;
+            const switchToggle = element.querySelector(".switch-toggle");
+
+            function rememberTapStart(event)
+            {
+                const point = getEventPoint(event);
+
+                switchTapStartX = point.x;
+                switchTapStartY = point.y;
+
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            function finishTap(event)
+            {
+                const point = getEventPoint(event);
+                const dx = Math.abs(point.x - switchTapStartX);
+                const dy = Math.abs(point.y - switchTapStartY);
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (dx <= 10 && dy <= 10)
+                {
+                    guardedToggleSwitch(model);
+                }
+            }
+
+            switchToggle.addEventListener("pointerdown", rememberTapStart, { passive: false });
+            switchToggle.addEventListener("pointerup", finishTap, { passive: false });
+            switchToggle.addEventListener("touchstart", rememberTapStart, { passive: false });
+            switchToggle.addEventListener("touchend", finishTap, { passive: false });
+            switchToggle.addEventListener("click", function(event)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                guardedToggleSwitch(model);
+            });
+
+            element.addEventListener("touchend", function(event)
+            {
+                if (event.target.classList.contains("connector"))
+                {
+                    return;
+                }
+
+                if (event.target.closest(".switch-toggle"))
+                {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+                guardedToggleSwitch(model);
+            }, { passive: false });
+
+            element.addEventListener("click", function(event)
+            {
+                if (event.target.classList.contains("connector"))
+                {
+                    return;
+                }
+
+                if (event.target.closest(".switch-toggle"))
+                {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+                guardedToggleSwitch(model);
+            });
+        }
+
+        function getEventPoint(event)
+        {
+            if (event.changedTouches && event.changedTouches.length > 0)
+            {
+                return {
+                    x: event.changedTouches[0].clientX,
+                    y: event.changedTouches[0].clientY
+                };
+            }
+
+            if (event.touches && event.touches.length > 0)
+            {
+                return {
+                    x: event.touches[0].clientX,
+                    y: event.touches[0].clientY
+                };
+            }
+
+            return {
+                x: event.clientX,
+                y: event.clientY
+            };
+        }
+
+        function guardedToggleSwitch(model)
+        {
+            const now = Date.now();
+
+            if (now - lastSwitchToggleTime < 250)
+            {
+                return;
+            }
+
+            lastSwitchToggleTime = now;
+            toggleSwitch(model);
+        }
+
+        function toggleSwitch(model)
+        {
+            model.closed = !model.closed;
+
+            model.element.classList.toggle("closed", model.closed);
+            model.element.querySelector(".label").textContent = model.closed ? "מתג סגור" : "מתג פתוח";
+
+            createSpark(model.element);
+            evaluateCircuit();
+        }
+
+        function setupPartDragging(model)
+        {
+            const element = model.element;
+
+            element.addEventListener("pointerdown", function(event)
+            {
+                if (event.target.classList.contains("connector"))
+                {
+                    return;
+                }
+
+                if (event.target.closest(".switch-toggle"))
+                {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const rect = element.getBoundingClientRect();
+
+                draggingPart = element;
+                dragOffsetX = event.clientX - rect.left;
+                dragOffsetY = event.clientY - rect.top;
+
+                element.style.zIndex = 4;
+            });
+        }
+
+        function moveDraggedPart(clientX, clientY)
+        {
+            const point = getBoardPoint(clientX, clientY);
+            const newPosition = clampToBoard(point.x - dragOffsetX, point.y - dragOffsetY);
+
+            draggingPart.style.left = newPosition.x + "px";
+            draggingPart.style.top = newPosition.y + "px";
+
+            renderWires(isCircuitOn());
+        }
+
+        function stopDragging()
+        {
+            if (!draggingPart)
+            {
+                return;
+            }
+
+            draggingPart.style.zIndex = 2;
+            draggingPart = null;
+        }
+
+        function setupConnectors(model)
+        {
+            const connectors = model.element.querySelectorAll(".connector");
+
+            connectors.forEach(connector =>
+            {
+                connector.addEventListener("pointerup", function(event)
+                {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const clicked =
+                    {
+                        partId: model.id,
+                        side: connector.dataset.side
+                    };
+
+                    if (!selectedConnector)
+                    {
+                        selectedConnector = clicked;
+                        model.element.classList.add("selected");
+                        statusEl.textContent = "עכשיו לחצו על נקודה כחולה ברכיב אחר כדי ליצור חוט";
+                        return;
+                    }
+
+                    if (selectedConnector.partId === clicked.partId)
+                    {
+                        selectedConnector = null;
+                        clearPartSelection();
+                        evaluateCircuit();
+                        return;
+                    }
+
+                    addWire(selectedConnector, clicked);
+
+                    selectedConnector = null;
+                    clearPartSelection();
+                    evaluateCircuit();
+                }, { passive: false });
+            });
+        }
+
+        function addWire(from, to)
+        {
+            const exists = wires.some(wire =>
+            {
+                return (
+                    wire.from.partId === from.partId &&
+                    wire.from.side === from.side &&
+                    wire.to.partId === to.partId &&
+                    wire.to.side === to.side
+                ) ||
+                (
+                    wire.from.partId === to.partId &&
+                    wire.from.side === to.side &&
+                    wire.to.partId === from.partId &&
+                    wire.to.side === from.side
+                );
+            });
+
+            if (!exists)
+            {
+                wires.push({ from: from, to: to });
+            }
+
+            renderWires(isCircuitOn());
+        }
+
+        function clearPartSelection()
+        {
+            parts.forEach(part => part.element.classList.remove("selected"));
+        }
+
+        function getBoardPoint(clientX, clientY)
+        {
+            const rect = board.getBoundingClientRect();
+
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function clampToBoard(x, y)
+        {
+            const boardRect = board.getBoundingClientRect();
+
+            const maxX = Math.max(0, boardRect.width - 74);
+            const maxY = Math.max(0, boardRect.height - 74);
+
+            return {
+                x: Math.max(4, Math.min(maxX, x)),
+                y: Math.max(86, Math.min(maxY, y))
+            };
+        }
+
+        function getConnectorCenter(partId, side)
+        {
+            const part = parts.find(p => p.id === partId);
+
+            if (!part)
+            {
+                return { x: 0, y: 0 };
+            }
+
+            const connector = part.element.querySelector(".connector." + side);
+            const cRect = connector.getBoundingClientRect();
+            const bRect = board.getBoundingClientRect();
+
+            return {
+                x: cRect.left - bRect.left + cRect.width / 2,
+                y: cRect.top - bRect.top + cRect.height / 2
+            };
+        }
+
+        function renderWires(active)
+        {
+            wiresSvg.innerHTML = "";
+
+            wires.forEach(wire =>
+            {
+                const p1 = getConnectorCenter(wire.from.partId, wire.from.side);
+                const p2 = getConnectorCenter(wire.to.partId, wire.to.side);
+
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const middleX = (p1.x + p2.x) / 2;
+
+                const d = "M " + p1.x + " " + p1.y +
+                          " C " + middleX + " " + p1.y +
+                          ", " + middleX + " " + p2.y +
+                          ", " + p2.x + " " + p2.y;
+
+                path.setAttribute("d", d);
+                path.setAttribute("class", active ? "wire active" : "wire");
+
+                wiresSvg.appendChild(path);
+            });
+        }
+
+        function calculateTotalResistance()
+        {
+            let totalResistance = Math.max(1, wires.length) * wireResistance;
+
+            parts.forEach(part =>
+            {
+                if (part.type === "battery" || part.type === "switch")
+                {
+                    return;
+                }
+
+                totalResistance += partInfo[part.type].resistance || 0;
+            });
+
+            return totalResistance;
+        }
+
+        function calculateCurrent(circuitOn)
+        {
+            if (!circuitOn)
+            {
+                return 0;
+            }
+
+            const totalResistance = calculateTotalResistance();
+
+            if (totalResistance <= 0)
+            {
+                return 0;
+            }
+
+            return batteryVoltage / totalResistance;
+        }
+
+        function evaluateCircuit()
+        {
+            const circuitOn = isCircuitOn();
+            const current = calculateCurrent(circuitOn);
+            const totalResistance = calculateTotalResistance();
+
+            const hasBattery = parts.some(p => p.type === "battery");
+            const hasSwitch = parts.some(p => p.type === "switch");
+            const allSwitchesClosed = parts.filter(p => p.type === "switch").every(p => p.closed);
+            const hasUsefulPart = parts.some(p =>
+                p.type === "bulb" ||
+                p.type === "radio" ||
+                p.type === "ammeter" ||
+                p.type === "voltmeter" ||
+                p.type.startsWith("resistor")
+            );
+
+            const hasLoop = findClosedLoop();
+
+            currentEl.textContent = "זרם חשמלי: " + current.toFixed(2) + " אמפר";
+            resistanceEl.textContent = "התנגדות כוללת: " + totalResistance.toFixed(1) + "Ω";
+
+            parts.forEach(part =>
+            {
+                if (part.type === "bulb")
+                {
+                    part.element.classList.toggle("on", circuitOn);
+                }
+
+                if (part.type === "radio")
+                {
+                    part.element.classList.toggle("singing", circuitOn);
+                }
+
+                if (part.type === "ammeter")
+                {
+                    part.element.classList.toggle("on", circuitOn);
+                    part.element.querySelector(".label").textContent = circuitOn ? "מד זרם: " + current.toFixed(2) + "A" : "מד זרם";
+                }
+
+                if (part.type === "voltmeter")
+                {
+                    part.element.classList.toggle("on", circuitOn);
+                    part.element.querySelector(".label").textContent = circuitOn ? "מד מתח: " + batteryVoltage + "V" : "מד מתח";
+                }
+            });
+
+            renderWires(circuitOn);
+
+            if (circuitOn)
+            {
+                statusEl.textContent = "המעגל עובד! הזרם זורם במעגל";
+                startRadio();
+            }
+            else
+            {
+                stopRadio();
+
+                if (!hasBattery)
+                {
+                    statusEl.textContent = "הוסיפו סוללה כדי ליצור מתח";
+                }
+                else if (!hasSwitch)
+                {
+                    statusEl.textContent = "הוסיפו מתג כדי לשלוט במעגל";
+                }
+                else if (!allSwitchesClosed)
+                {
+                    statusEl.textContent = "המתג פתוח, לכן אין זרם";
+                }
+                else if (!hasUsefulPart)
+                {
+                    statusEl.textContent = "הוסיפו נורה, רדיו, נגד או מדידה";
+                }
+                else if (!hasLoop)
+                {
+                    statusEl.textContent = "חברו את הרכיבים בעזרת חוטים למעגל סגור";
+                }
+                else
+                {
+                    statusEl.textContent = "כמעט הצלחתם";
+                }
+            }
+        }
+
+        function isCircuitOn()
+        {
+            const hasBattery = parts.some(p => p.type === "battery");
+            const hasSwitch = parts.some(p => p.type === "switch");
+            const allSwitchesClosed = parts.filter(p => p.type === "switch").every(p => p.closed);
+
+            const hasUsefulPart = parts.some(p =>
+                p.type === "bulb" ||
+                p.type === "radio" ||
+                p.type === "ammeter" ||
+                p.type === "voltmeter" ||
+                p.type.startsWith("resistor")
+            );
+
+            return hasBattery && hasSwitch && allSwitchesClosed && hasUsefulPart && findClosedLoop();
+        }
+
+        function findClosedLoop()
+        {
+            if (parts.length < 3 || wires.length < 3)
+            {
+                return false;
+            }
+
+            const graph = new Map();
+
+            parts.forEach(part =>
+            {
+                graph.set(part.id, new Set());
+            });
+
+            wires.forEach(wire =>
+            {
+                if (graph.has(wire.from.partId) && graph.has(wire.to.partId))
+                {
+                    graph.get(wire.from.partId).add(wire.to.partId);
+                    graph.get(wire.to.partId).add(wire.from.partId);
+                }
+            });
+
+            for (const part of parts)
+            {
+                const visited = new Set();
+
+                if (hasCycle(part.id, null, visited, graph))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function hasCycle(current, parent, visited, graph)
+        {
+            visited.add(current);
+
+            for (const neighbor of graph.get(current))
+            {
+                if (!visited.has(neighbor))
+                {
+                    if (hasCycle(neighbor, current, visited, graph))
+                    {
+                        return true;
+                    }
+                }
+                else if (neighbor !== parent)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function createSpark(element)
+        {
+            const spark = document.createElement("div");
+            spark.className = "spark";
+            spark.textContent = "⚡";
+
+            const eRect = element.getBoundingClientRect();
+            const bRect = board.getBoundingClientRect();
+
+            spark.style.right = (bRect.right - eRect.right + 25) + "px";
+            spark.style.top = (eRect.top - bRect.top - 10) + "px";
+
+            board.appendChild(spark);
+
+            setTimeout(function()
+            {
+                spark.remove();
+            }, 850);
+        }
+
+        function startRadio()
+        {
+            const hasRadio = parts.some(p => p.type === "radio");
+
+            if (!hasRadio)
+            {
+                return;
+            }
+
+            if (radioTimer)
+            {
+                return;
+            }
+
+            if (!audioContext)
+            {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+                if (!AudioContextClass)
+                {
+                    return;
+                }
+
+                audioContext = new AudioContextClass();
+            }
+
+            if (audioContext.state === "suspended")
+            {
+                audioContext.resume();
+            }
+
+            const notes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46];
+            let index = 0;
+
+            radioTimer = setInterval(function()
+            {
+                playNote(notes[index % notes.length], 0.15);
+                index++;
+            }, 240);
+        }
+
+        function stopRadio()
+        {
+            if (radioTimer)
+            {
+                clearInterval(radioTimer);
+                radioTimer = null;
+            }
+        }
+
+        function playNote(frequency, duration)
+        {
+            if (!audioContext)
+            {
+                return;
+            }
+
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+
+            oscillator.type = "sine";
+            oscillator.frequency.value = frequency;
+
+            gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.06, audioContext.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + duration + 0.03);
+        }
+
+        window.addEventListener("resize", function()
+        {
+            renderWires(isCircuitOn());
+            updateFakeScrollbar();
+        });
+    </script>
+</body>
+</html>
